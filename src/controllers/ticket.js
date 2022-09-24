@@ -21,7 +21,19 @@ const getAllTicket = async (req, res) => {
       response(res, 500, 'Failed to get list of ticket', result.success, result.data);
     }
   } catch (error) {
-    response(res, 500, 'Failed to get user info');
+    response(res, 500, 'Failed to get list of ticket');
+  }
+};
+const getTicketDetail = async (req, res) => {
+  try {
+    const result = await ticketModel.getTicketDetail(req);
+    if (result.success) {
+      response(res, 200, 'Successfully get ticket detail', result.success, result.data.rows);
+    } else {
+      response(res, 500, 'Failed to get ticket detail', result.success, result.data);
+    }
+  } catch (error) {
+    response(res, 500, 'Failed to get ticket detail');
   }
 };
 
@@ -114,6 +126,7 @@ const updateTicket = async (req, res) => {
 
 module.exports = {
   getAllTicket,
+  getTicketDetail,
   submitTicket,
   replyTicket,
   updateTicket,

@@ -3,7 +3,8 @@ const handlers = require('../controllers/ticket');
 const authentication = require('../middlewares/authentication');
 const multer = require('../middlewares/multer');
 
-Router.get('/all', authentication.checkAccessToken, handlers.getAllTicket);
+Router.get('/all', authentication.checkAccessTokenAdmin, handlers.getAllTicket);
+Router.get('/detail/:id', authentication.checkAccessToken, handlers.getTicketDetail);
 
 Router.post(
   '/submit',
