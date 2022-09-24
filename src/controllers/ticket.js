@@ -1,13 +1,12 @@
 const { tx } = require('../databases/config');
-const hbs = require('nodemailer-express-handlebars');
-const path = require('path');
+const axios = require('axios');
 
 const util = require('../utils');
 const response = require('../utils/response');
-const { transporter } = require('../utils/transporter');
 
 const { createData, updateData, deleteData } = require('../utils/crud');
 const ticketModel = require('../models/ticket');
+const { TICKET_WS } = process.env;
 
 const getAllTicket = async (req, res) => {
   const page = parseInt(req.query?.page);
@@ -29,8 +28,22 @@ const getAllTicket = async (req, res) => {
 const submitTicket = async (req, res) => {
   try {
     tx(async (client) => {
-      req.body.attachment = req.file.location;
-      await createData(body, 'helpdesk.t_tickets', client);
+      if (req.file) req.body.attachment = req.file.location;
+      req.body.submitter_id = req.token.id_user;
+
+      // Get Ticket Prediction
+      const pred = await axios.post(`${TICKET_WS}/v1/api/ticket/`, { complaint: req.body.title + ' ' + req.body.description });
+
+      if (pred.status === 200) {
+        req.query.division = pred.data.category;
+        req.body.category = pred.data.category;
+        const getAssignee = await ticketModel.getAssignee(req);
+        if (getAssignee.data.rows.length > 0) {
+          req.body.assigned_to_id = getAssignee.data.rows[0].id;
+        }
+      }
+
+      await createData(req.body, 'helpdesk.t_tickets', 'id', client);
 
       const dataLog = {
         id_user: req.token.id_user,
@@ -53,8 +66,9 @@ const submitTicket = async (req, res) => {
 const replyTicket = async (req, res) => {
   try {
     tx(async (client) => {
-      req.body.attachment = req.file.location;
-      await createData(body, 'helpdesk.t_ticket_log_replies', client);
+      if (req.file) req.body.attachment = req.file.location;
+      req.body.submitter_id = req.token.id_user;
+      await createData(req.body, 'helpdesk.t_ticket_log_replies', 'id', client);
 
       const dataLog = {
         id_user: req.token.id_user,

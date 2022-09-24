@@ -30,6 +30,30 @@ const getAllTicket = (req) => {
   });
 };
 
+const getAssignee = (req) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const params = [];
+      let qs =
+        "select distinct tu.id, tu.full_name, count(tt.id) from helpdesk.t_users tu join helpdesk.t_tickets tt on tt.assigned_to_id = tu.id where tt.status = '00' and tu.division = $1 and tu.role in ('02', '01') group  by tu.id order by 3 ASC limit 1";
+
+      params.push(req.query.division);
+
+      db.query(qs, params, (err, result) => {
+        if (err) {
+          console.log(err);
+          return reject({ success: false, error: err });
+        }
+        resolve({ success: true, data: result });
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getAllTicket,
+  getAssignee,
 };
