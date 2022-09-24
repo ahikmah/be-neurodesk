@@ -22,10 +22,10 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const fileItemFilter = (req, file, cb) => {
-  const allowedExt = /jpg|png|jpeg|mp4|mp3|pdf/i;
+  const allowedExt = /jpg|png|jpeg|zip|rar|pdf/i;
   const isAllowed = allowedExt.test(path.extname(file.originalname));
   console.log(path.extname(file.originalname));
-  if (!isAllowed) return cb(new Error('Images only'));
+  if (!isAllowed) return cb(new Error('Format not supported'));
   cb(null, true);
 };
 
@@ -69,7 +69,7 @@ const uploadItemAttachment = multer({
     },
   }),
   limits: {
-    fileSize: 5 * power(bytes, 2),
+    fileSize: 50 * power(bytes, 2),
   },
   fileFilter: fileItemFilter,
 });
