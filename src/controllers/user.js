@@ -152,6 +152,30 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const updatePhotoProfile = async (req, res) => {
+  try {
+    tx(async (client) => {
+      const whereUpdate = { id: req.token.id_user, qs: 'id' };
+      await updateData(whereUpdate, { photo: req.file.location }, 'helpdesk.t_users', client);
+
+      const dataLog = {
+        id_user: req.token.id_user,
+        activity: `Update photo profile`,
+        action: 'update',
+        req_query: JSON.stringify(req.query),
+        req_params: JSON.stringify(req.params),
+        req_body: JSON.stringify(req.body),
+      };
+
+      await createData(dataLog, 'helpdesk.t_user_log_activities', 'id', client);
+
+      response(res, 200, 'Successfully update photo profile', true);
+    }, res);
+  } catch (error) {
+    response(res, 500, 'Failed to update photo profile');
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     tx(async (client) => {
@@ -181,5 +205,6 @@ module.exports = {
   createUsers,
   updateUser,
   updateProfile,
+  updatePhotoProfile,
   deleteUser,
 };
