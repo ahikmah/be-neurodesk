@@ -51,7 +51,8 @@ exports.checkAccessTokenSuperAdmin = async (req, res, next) => {
     if (result.data.rowCount > 0) {
       return response(res, 401, 'Expired token');
     }
-    if (!['SA'].includes(check.data.role_type)) {
+    console.log(check.data);
+    if (!['01'].includes(check.data.role)) {
       return response(res, 401, 'Unauthorized Access');
     }
     req.token = check.data;
@@ -74,7 +75,7 @@ exports.checkAccessTokenAdmin = async (req, res, next) => {
     if (result.data.rowCount > 0) {
       return response(res, 401, 'Expired token');
     }
-    if (!['SA', 'BA'].includes(check.data.role_type)) {
+    if (!['01', '02'].includes(check.data.role)) {
       return response(res, 401, 'Unauthorized Access');
     }
     req.token = check.data;

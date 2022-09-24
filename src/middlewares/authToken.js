@@ -5,9 +5,7 @@ const { logoutToken: m_logoutToken } = require('./../models/auth');
 const generateToken = async (data, expires, secret) => {
   try {
     const now = Date.now();
-    const cryptID = await jgCrypt.encrypt(
-      `${secret}|${data.id}|${data.role_type}|${now}|${dateGen.generateNowPlusTime(now, expires)}|${data.library}}`
-    );
+    const cryptID = await jgCrypt.encrypt(`${secret}|${data.id}|${data.role}|${now}|${dateGen.generateNowPlusTime(now, expires)}`);
     return cryptID;
   } catch (error) {
     return error;
@@ -32,7 +30,7 @@ const verifyToken = (data, secret, lgout = false, exp = false) => {
     } else if (token[0] !== secret) {
       reject(new Error('Wrong secret token'));
     }
-    resolve({ message: 'Token verified', data: { user_id: token[1], role_type: token[2], library: token[5] || null } });
+    resolve({ message: 'Token verified', data: { id_user: token[1], role: token[2] } });
   });
 };
 module.exports = {

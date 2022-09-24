@@ -46,7 +46,7 @@
 //       secretAccessKey: process.env.SPACES_SECRET, // Secret access key defined through an environment variable.
 //     },
 //     key: function (req, file, cb) {
-//       cb(null, `digilib/avatar/avatar-${req.token.user_id}-${Date.now()}${path.extname(file.originalname)}`);
+//       cb(null, `digilib/avatar/avatar-${req.token.id_user}-${Date.now()}${path.extname(file.originalname)}`);
 //     },
 //   }),
 //   limits: {
@@ -65,7 +65,7 @@
 //       secretAccessKey: process.env.SPACES_SECRET, // Secret access key defined through an environment variable.
 //     },
 //     key: function (req, file, cb) {
-//       cb(null, `digilib/master-item/${req.token.user_id}/${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+//       cb(null, `digilib/master-item/${req.token.id_user}/${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
 //     },
 //   }),
 //   limits: {

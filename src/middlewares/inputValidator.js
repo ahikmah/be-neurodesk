@@ -145,7 +145,12 @@ const setPasswordValidator = () => {
   ];
 };
 
-// // Middleware
+// General
+const updateValidator = () => {
+  return [body('id').notEmpty().withMessage("ID can't be empty")];
+};
+
+// Middleware
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -173,5 +178,6 @@ module.exports = {
   forgotPasswordValidator,
   setPasswordValidator,
   changePasswordValidator,
+  updateValidator,
   validate,
 };

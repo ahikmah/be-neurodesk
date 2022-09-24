@@ -3,7 +3,7 @@ const { pool: db } = require('./../databases/config');
 const login = (data) => {
   return new Promise((resolve, reject) => {
     try {
-      db.query('select tu.id, tu.email,  tu.password from helpdesk.t_users tu where tu.email = $1', [data.email], (err, result) => {
+      db.query('select tu.id, tu.email, tu.role,  tu.password from helpdesk.t_users tu where tu.email = $1', [data.email], (err, result) => {
         if (err) {
           reject({ success: false, error: err });
         }
@@ -76,7 +76,7 @@ const checkToken = (data) => {
 const getPassword = (req) => {
   return new Promise((resolve, reject) => {
     try {
-      db.query('select tu.id, tu.email, tu.password from helpdesk.t_users tu where tu.id = $1', [req.token.user_id], (err, result) => {
+      db.query('select tu.id, tu.email, tu.password from helpdesk.t_users tu where tu.id = $1', [req.token.id_user], (err, result) => {
         if (err) {
           reject({ success: false, error: err });
         }

@@ -19,8 +19,7 @@ Router.post('/forgot-password', validator.forgotPasswordValidator(), validator.v
 Router.post('/set-password', validator.setPasswordValidator(), validator.validate, handlers.setPassword);
 Router.post('/change-password', authentication.checkAccessToken, validator.changePasswordValidator(), validator.validate, handlers.changePassword);
 
-// // Reset and Change Password
+Router.post('/revoke', authentication.checkRefreshToken, handlers.revokeToken);
 // Router.post('/public-register', validator.registrationValidator(true), validator.validate, handlers.register);
-// Router.post('/revoke', authentication.checkRefreshToken, handlers.revokeToken);
 
 module.exports = Router;

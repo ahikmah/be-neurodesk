@@ -13,7 +13,7 @@ const authToken = require('./../middlewares/authToken');
 const authModel = require('./../models/auth');
 // const userModel = require('./../models/user');
 const { createData, updateData, deleteData } = require('./../utils/crud');
-const { REACT_APP, BE_ILS, EXT_SECRET } = process.env;
+const { REACT_APP } = process.env;
 
 const register = async (req, res) => {
   try {
@@ -203,11 +203,11 @@ const changePassword = async (req, res) => {
       if (!checkPass) {
         return response(res, 401, 'Old Password is wrong');
       }
-      const whereUpdate = { id: req.token.user_id, qs: 'id' };
+      const whereUpdate = { id: req.token.id_user, qs: 'id' };
       await updateData(whereUpdate, { password: body.password }, 'helpdesk.t_users', client);
 
       const dataLog = {
-        id_user: req.token.user_id,
+        id_user: req.token.id_user,
         activity: `Change password`,
         action: 'update',
         req_query: JSON.stringify(req.query),
