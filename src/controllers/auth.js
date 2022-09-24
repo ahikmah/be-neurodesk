@@ -67,6 +67,58 @@ const register = async (req, res) => {
   }
 };
 
+const registerPublic = async (req, res) => {
+  try {
+    tx(async (client) => {
+      const data_register = req.body;
+      data_register.otp = util.otpGenerator();
+      const salt = await bcrypt.genSalt(13);
+      data_register.password = await bcrypt.hash(data_register.password, salt);
+      data_register.role = '03';
+      const createAccount = await createData(data_register, 'helpdesk.t_users', 'id', client);
+
+      if (createAccount.success) {
+        // SENDING EMAIL
+        const handlebarOptions = {
+          viewEngine: {
+            partialsDir: path.resolve(__dirname, '../view/email/'),
+            defaultLayout: false,
+          },
+          viewPath: path.resolve(__dirname, '../view/email/'),
+        };
+        // use a template file with nodemailer
+        transporter.use('compile', hbs(handlebarOptions));
+
+        var mailOptions = {
+          from: '"NEURO DESK" <neurodesk.ai@gmail.com>',
+          to: req.body.email,
+          subject: 'Account Activation',
+          template: 'activation-sa', // the name of the template file i.e email.handlebars
+          context: {
+            name: data_register.full_name,
+            link: `${REACT_APP}/activation?otp=${data_register.otp}&id=${createAccount.data.rows[0].id}`,
+          },
+        };
+
+        // trigger the sending of the E-mail
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message sent: ' + info.response);
+        });
+
+        return response(res, 201, 'Registration Success', createAccount.success);
+      } else {
+        return response(res, 500, 'Registration Failed');
+      }
+    }, res);
+  } catch (error) {
+    console.log(error);
+    response(res, 500, 'Registration Failed');
+  }
+};
+
 const accountActivation = async (req, res) => {
   try {
     tx(async (client) => {
@@ -318,6 +370,7 @@ const logoutToken = async ({ token }, res) => {
 
 module.exports = {
   register,
+  registerPublic,
   accountActivation,
   login,
   sendEmailResetPassword,

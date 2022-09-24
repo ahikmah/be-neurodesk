@@ -20,6 +20,6 @@ Router.post('/set-password', validator.setPasswordValidator(), validator.validat
 Router.post('/change-password', authentication.checkAccessToken, validator.changePasswordValidator(), validator.validate, handlers.changePassword);
 
 Router.post('/revoke', authentication.checkRefreshToken, handlers.revokeToken);
-// Router.post('/public-register', validator.registrationValidator(true), validator.validate, handlers.register);
+Router.post('/public-register', validator.registrationValidator(), validator.validate, handlers.registerPublic);
 
 module.exports = Router;
