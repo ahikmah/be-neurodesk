@@ -42,6 +42,7 @@ const updateData = (where, data, tb_name, client) => {
       if (client) {
         client.query(qs, colValues, (err, result) => {
           if (err) {
+            console.log(err);
             return reject({ success: false, error: err });
           }
           resolve({ success: true, result });
