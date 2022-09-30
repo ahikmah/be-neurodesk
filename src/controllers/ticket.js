@@ -10,7 +10,6 @@ const { TICKET_WS } = process.env;
 const getAllTicket = async (req, res) => {
   const page = parseInt(req.query?.page);
   const offset = parseInt(req.query?.offset);
-
   try {
     const result = await ticketModel.getAllTicket(req);
     if (result.success) {
