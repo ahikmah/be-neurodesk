@@ -1,5 +1,24 @@
 const { pool: db } = require('../databases/config');
 
+const getSummary = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      let qs =
+        "select (select count(*) from helpdesk.t_tickets where status ='00') as count_open, (select count(*) from helpdesk.t_tickets where status ='01') as count_resolved, (select count(*) from helpdesk.t_tickets where status ='02') as count_closed, (select count(*) from helpdesk.t_tickets where status ='03') as count_duplicate ";
+
+      db.query(qs, (err, result) => {
+        if (err) {
+          console.log(err);
+          return reject({ success: false, error: err });
+        }
+        resolve({ success: true, data: result });
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
 const getAllTicket = (req) => {
   return new Promise((resolve, reject) => {
     try {
@@ -117,6 +136,7 @@ const getAllCategory = (req) => {
 };
 
 module.exports = {
+  getSummary,
   getAllTicket,
   getTicketDetail,
   getAssignee,

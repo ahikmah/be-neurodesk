@@ -3,6 +3,7 @@ const handlers = require('../controllers/ticket');
 const authentication = require('../middlewares/authentication');
 const multer = require('../middlewares/multer');
 
+Router.get('/summary', authentication.checkAccessTokenAdmin, handlers.getSummary);
 Router.get('/all', authentication.checkAccessTokenAdmin, handlers.getAllTicket);
 Router.get('/detail/:id', authentication.checkAccessToken, handlers.getTicketDetail);
 

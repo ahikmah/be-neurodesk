@@ -4,6 +4,7 @@ const authentication = require('./../middlewares/authentication');
 const validator = require('./../middlewares/inputValidator');
 const multer = require('../middlewares/multer');
 
+Router.get('/log', authentication.checkAccessToken, handlers.getUserLog);
 Router.get('/', authentication.checkAccessToken, handlers.getUser);
 Router.get('/all', authentication.checkAccessToken, handlers.getAllUser);
 

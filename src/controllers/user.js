@@ -82,7 +82,6 @@ const createUsers = async (req, res) => {
 const getAllUser = async (req, res) => {
   const page = parseInt(req.query?.page);
   const offset = parseInt(req.query?.offset);
-
   try {
     const result = await userModel.getAllUser(req);
     if (result.success) {
@@ -92,7 +91,22 @@ const getAllUser = async (req, res) => {
       response(res, 500, 'Failed to get list of users', result.success, result.data);
     }
   } catch (error) {
-    response(res, 500, 'Failed to get user info');
+    response(res, 500, 'Failed to get list of users');
+  }
+};
+const getUserLog = async (req, res) => {
+  const page = parseInt(req.query?.page);
+  const offset = parseInt(req.query?.offset);
+  try {
+    const result = await userModel.getUserLog(req);
+    if (result.success) {
+      const countData = { total: result.data.rowCount > 0 ? parseInt(result.data.rows[0].totalcount) : 0, page, offset };
+      response(res, 200, 'Successfully get logs', result.success, result.data.rows, page && countData);
+    } else {
+      response(res, 500, 'Failed to get logs', result.success, result.data);
+    }
+  } catch (error) {
+    response(res, 500, 'Failed to get logs');
   }
 };
 
@@ -201,6 +215,7 @@ const deleteUser = async (req, res) => {
 };
 module.exports = {
   getUser,
+  getUserLog,
   getAllUser,
   createUsers,
   updateUser,

@@ -7,6 +7,18 @@ const { createData, updateData, deleteData } = require('../utils/crud');
 const ticketModel = require('../models/ticket');
 const { TICKET_WS } = process.env;
 
+const getSummary = async (req, res) => {
+  try {
+    const result = await ticketModel.getSummary(req);
+    if (result.success) {
+      response(res, 200, 'Successfully get summary', result.success, result.data.rows);
+    } else {
+      response(res, 500, 'Failed to summary', result.success, result.data);
+    }
+  } catch (error) {
+    response(res, 500, 'Failed to summary');
+  }
+};
 const getAllTicket = async (req, res) => {
   const page = parseInt(req.query?.page);
   const offset = parseInt(req.query?.offset);
@@ -187,6 +199,7 @@ const deleteCategory = async (req, res) => {
 };
 
 module.exports = {
+  getSummary,
   getAllTicket,
   getTicketDetail,
   submitTicket,
