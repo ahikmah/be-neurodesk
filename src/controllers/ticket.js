@@ -1,7 +1,6 @@
 const { tx } = require('../databases/config');
 const axios = require('axios');
 
-const util = require('../utils');
 const response = require('../utils/response');
 
 const { createData, updateData, deleteData } = require('../utils/crud');
@@ -124,10 +123,77 @@ const updateTicket = async (req, res) => {
   }
 };
 
+const getAllCategory = async (req, res) => {
+  const page = parseInt(req.query?.page);
+  const offset = parseInt(req.query?.offset);
+
+  try {
+    const result = await ticketModel.getAllCategory(req);
+    if (result.success) {
+      const countData = { total: result.data.rowCount > 0 ? parseInt(result.data.rows[0].totalcount) : 0, page, offset };
+      response(res, 200, 'Successfully get list of category', result.success, result.data.rows, page && countData);
+    } else {
+      response(res, 500, 'Failed to get list of category', result.success, result.data);
+    }
+  } catch (error) {
+    response(res, 500, 'Failed to get list of category');
+  }
+};
+
+const createCategory = async (req, res) => {
+  try {
+    tx(async (client) => {
+      await createData(req.body, 'helpdesk.t_master_category', 'id', client);
+
+      const dataLog = {
+        id_user: req.token.id_user,
+        activity: `Create Category`,
+        action: 'insert',
+        req_query: JSON.stringify(req.query),
+        req_params: JSON.stringify(req.params),
+        req_body: JSON.stringify(req.body),
+      };
+
+      await createData(dataLog, 'helpdesk.t_user_log_activities', 'id', client);
+
+      response(res, 200, 'Successfully create new category', true);
+    }, res);
+  } catch (error) {
+    response(res, 500, 'Failed to create new category');
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    tx(async (client) => {
+      const whereDelete = { id: req.params.id, qs: 'id' };
+      await deleteData(whereDelete, 'helpdesk.t_master_category', client);
+
+      const dataLog = {
+        id_user: req.token.id_user,
+        activity: `Delete a category `,
+        action: 'delete',
+        req_query: JSON.stringify(req.query),
+        req_params: JSON.stringify(req.params),
+        req_body: JSON.stringify(req.body),
+      };
+
+      await createData(dataLog, 'helpdesk.t_user_log_activities', 'id', client);
+
+      response(res, 200, 'Successfully delete category', true);
+    }, res);
+  } catch (error) {
+    response(res, 500, 'Failed to delete category');
+  }
+};
+
 module.exports = {
   getAllTicket,
   getTicketDetail,
   submitTicket,
   replyTicket,
   updateTicket,
+  getAllCategory,
+  createCategory,
+  deleteCategory,
 };

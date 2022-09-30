@@ -22,4 +22,8 @@ Router.post(
 
 Router.patch('/update', authentication.checkAccessTokenAdmin, handlers.updateTicket);
 
+Router.get('/category', authentication.checkAccessToken, handlers.getAllCategory);
+Router.post('/category', authentication.checkAccessTokenAdmin, handlers.createCategory);
+Router.delete('/category/:id', authentication.checkAccessTokenAdmin, handlers.deleteCategory);
+
 module.exports = Router;

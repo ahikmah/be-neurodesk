@@ -5,7 +5,7 @@ const getUserInfo = (req) => {
     try {
       const params = [];
       let qs =
-        "select tu.id, tu.role, tu.photo, tu.full_name, tu.email, tu.status, case when tu.status = '01' then 'Active' when tu.status = '00' then 'Waiting for Activation' else 'Undefined' end as status_user, case when tu.role = '01' then 'Super Admin' when tu.role = '02' then 'Dev Team' when tu.role = '03' then 'Reporter (Ext)' else 'Undefined' end as user_role from helpdesk.t_users tu where tu.id is not null ";
+        "select tu.id, tu.role, tu.photo, tu.full_name, tu.email, tu.status, case when tu.status = '01' then 'Active' when tu.status = '00' then 'Waiting for Activation' else 'Undefined' end as status_user, case when tu.role = '01' then 'Owner' when tu.role = '02' then 'Helpdesk Team' when tu.role = '03' then 'Basic User' else 'Undefined' end as user_role from helpdesk.t_users tu where tu.id is not null ";
 
       // Use only one of the query urls below
       // ⚠️ Dont change the order ⚠️
@@ -48,7 +48,7 @@ const getAllUser = (req) => {
 
       const params = [];
       let qs =
-        "select tu.id, tu.photo, tu.full_name, tu.email, tu.division, tu.status, case when tu.status = '01' then 'Active' when tu.status = '00' then 'Waiting for Activation' else 'Undefined' end as status_user, case when tu.role = '01' then 'Super Admin' when tu.role = '02' then 'Dev Team' when tu.role = '03' then 'Reporter (Ext)' else 'Undefined' end as user_role, COUNT(*) OVER() as totalCount from helpdesk.t_users tu where tu.id is not null ";
+        "select tu.id, tu.photo, tu.full_name, tu.email, tu.division, tu.status, case when tu.status = '01' then 'Active' when tu.status = '00' then 'Waiting for Activation' else 'Undefined' end as status_user, case when tu.role = '01' then 'Owner' when tu.role = '02' then 'Helpdesk Team' when tu.role = '03' then 'Basic User' else 'Undefined' end as user_role, COUNT(*) OVER() as totalCount from helpdesk.t_users tu where tu.id is not null ";
 
       //Use only one of the query urls below
       if (req.query.email) {
