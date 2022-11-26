@@ -9,21 +9,20 @@ const pool = new Pool({
   },
 });
 
-const tx = async (callback, res) => {
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
+const tx = (callback, res) => {
+  pool.connect().then(async (client) => {
     try {
+      await client.query('BEGIN');
       await callback(client);
       await client.query('COMMIT');
-    } catch (error) {
+      client.release();
+    } catch (err) {
       await client.query('ROLLBACK');
-      console.error(error.stack);
+      client.release();
+      console.log(err.stack);
       response(res, 500, 'Transaction failed');
     }
-  } finally {
-    await client.end();
-  }
+  });
 };
 module.exports = {
   pool,
